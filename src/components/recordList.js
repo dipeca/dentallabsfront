@@ -51,7 +51,7 @@ export default function RecordList(props) {
   useEffect(() => {
     async function getRecords() {
       console.log("dpca: " + props.user);
-      const response = await fetch(`http://localhost:5010/records/${props.user}`);
+      const response = await fetch(`https://dentallabstapim.herokuapp.com/records/${props.user}`);
 
       if (!response.ok) {
         const message = `An error occurred: ${response.statusText}`;
@@ -70,7 +70,7 @@ export default function RecordList(props) {
 
   // This method will delete a record
   async function deleteRecord(id) {
-    await fetch(`http://localhost:5010/${id}`, {
+    await fetch(`https://dentallabstapim.herokuapp.com/${id}`, {
       method: "DELETE"
     });
 
