@@ -8,7 +8,6 @@ import Navbar from "./components/navbar";
 import RecordList from "./components/recordList";
 import Edit from "./components/edit";
 import Login from "./components/login";
-import { render } from "@testing-library/react";
 import BottomBar from "./components/bottombar";
 
 
