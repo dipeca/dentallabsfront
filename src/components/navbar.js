@@ -1,10 +1,9 @@
 import React from "react";
-import { Button, Container, Box, Grid, Tooltip } from '@mui/material';
+import { Container, Grid, Tooltip } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
@@ -23,11 +22,6 @@ export default function Navbar(props) {
       flexGrow: 1,
     },
   }));
-
-  const style = {
-
-    background : '#ff0000'
-};
 
   const Buttons = (props) => (
     <>

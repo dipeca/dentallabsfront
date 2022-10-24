@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { resources } from '../resource'
 import { TableContainer, TableHead, Table, TableCell, TableRow, TableBody, Paper, styled, Container, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@mui/material/Fab';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -93,19 +91,6 @@ export default function RecordList(props) {
       );
     });
   }
-
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      flexGrow: 1,
-    },
-  }));
-  const classes = useStyles(props);
 
   // This following section will display the table with the records of individuals.
   return (

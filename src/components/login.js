@@ -1,20 +1,13 @@
-import React, { createRef, inputRef, useState } from "react";
+import React, { createRef} from "react";
 import { useNavigate } from "react-router";
-import { resources } from '../resource'
 import { TextField } from '@material-ui/core';
-import { InputLabel } from '@material-ui/core';
-import { Select, } from '@material-ui/core';
-import { MenuItem } from '@material-ui/core';
-import { TextareaAutosize } from '@material-ui/core';
-import { Typography } from '@mui/material';
-import { Button, Container, Box, FormLabel, Divider } from '@mui/material';
-import { Grid, Radio, FormControlLabel } from "@mui/material";
+import { Button, Box } from '@mui/material';
+import { Grid } from "@mui/material";
 
 export default function Login(props) {
 
 
     const textRef = createRef();
-    const _resources = resources[props.language]
     const navigate = useNavigate();
 
     async function fetchData() {
