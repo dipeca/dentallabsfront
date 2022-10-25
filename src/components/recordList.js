@@ -4,12 +4,15 @@ import { TableContainer, TableHead, Table, TableCell, TableRow, TableBody, Paper
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
+import { Grid, Tooltip } from '@mui/material';
+import Button from '@mui/material/Button';
+import BasicMenu from "./BasicMenu";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.secondary.main,
   },
-  // hide last border
+  // hide border
   '&:last-child td, &:last-child th': {
     border: 0,
   },
@@ -23,18 +26,28 @@ export default function RecordList(props) {
     return str.length > 100 ? str.substring(0, 95) + "..." : str;
   }
 
+  const Buttons = (props) => (
+    <>
+      <Tooltip title="Cria nova encomenda" followCursor>
+        <Button variant="contained" color="primary" size="medium" onClick={(user, page) => props.navigateTo(props.user, 3)} aria-label="Create">Criar</Button>
+      </Tooltip>
+    </>
+  );
+
   const Record = (props) => (
     <StyledTableRow>
-      <TableCell align="left">{props.record.age}</TableCell>
       <TableCell align="left">{props.record.rehabType}</TableCell>
-      <TableCell align="left">{truncate(props.record.description)}</TableCell>
       <TableCell align="left">{props.record.colour}</TableCell>
+      <TableCell align="left">{props.record.patient}</TableCell>
+      <TableCell align="left">{props.record.age}</TableCell>
+      <TableCell align="left">{truncate(props.record.description)}</TableCell>
       <TableCell align="left">
         <Box sx={{ '& > :not(style)': { m: 1 } }}>
+          
           <Fab color="primary" size="small" onClick={(_id) => navigateTo(props.record._id)} aria-label="edit">
             <EditIcon />
           </Fab>
-          <Fab color="delete" size="small" onClick={() => { props.deleteRecord(props.record._id); }} aria-label="edit">
+          <Fab size="small" onClick={() => { props.deleteRecord(props.record._id); }} aria-label="edit">
             <DeleteIcon />
           </Fab>
         </Box>
@@ -79,11 +92,13 @@ export default function RecordList(props) {
   }
 
   // This method will map out the records on the table
-  function recordList(props) {
+  function recordList() {
 
     return records.map((record) => {
       return (
         <Record
+          user={props.user}
+          navigateTo={props.navigateTo}
           record={record}
           deleteRecord={() => deleteRecord(record._id)}
           key={record._id}
@@ -94,8 +109,12 @@ export default function RecordList(props) {
 
   // This following section will display the table with the records of individuals.
   return (
-    <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
-      <TableContainer component={Paper}>
+
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Grid container xs={1} sx={{ mt: 2, mb: 2 }}>
+        {props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}
+      </Grid>
+      <TableContainer>
         <Table stickyHeader aria-label="simple table">
           <TableHead>
             <TableRow sx={{
@@ -106,17 +125,19 @@ export default function RecordList(props) {
                 color: "#444444"
               }
             }}>
-              <TableCell align="left">{resources.pt.FORM.AGE}</TableCell>
+
               <TableCell align="left">{resources.pt.FORM.REHAB_TYPE}</TableCell>
-              <TableCell align="left">{resources.pt.FORM.DESCRIPTION}</TableCell>
               <TableCell align="left">{resources.pt.FORM.COLOUR}</TableCell>
+              <TableCell align="left">{resources.pt.FORM.PATIENT}</TableCell>
+              <TableCell align="left">{resources.pt.FORM.AGE}</TableCell>
+              <TableCell align="left">{resources.pt.FORM.DESCRIPTION}</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {recordList()}
           </TableBody>
-          
+
         </Table>
       </TableContainer>
     </Container>

@@ -5,7 +5,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
 
 // Here, we display our Navbar
@@ -23,15 +22,7 @@ export default function Navbar(props) {
     },
   }));
 
-  const Buttons = (props) => (
-    <>
-      <Tooltip title="Cria nova encomenda" followCursor>
-        <Fab color="primary" size="small" onClick={(user, page) => props.navigateTo(props.user, 3)} aria-label="Create">
-          <AddIcon />
-        </Fab>
-      </Tooltip>
-    </>
-  );
+
   const classes = useStyles(props);
   return (
     <div>
@@ -50,9 +41,6 @@ export default function Navbar(props) {
                 <Typography variant="h6" className={classes.title}>
                   Laboratório TAPIM
                 </Typography>
-              </Grid>
-              <Grid container xs={1} sx={{ mt: 2 }}>
-                {props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}
               </Grid>
             </Grid>
 
