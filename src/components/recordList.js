@@ -37,10 +37,10 @@ export default function RecordList(props) {
   const Record = (props) => (
     <StyledTableRow>
       <TableCell align="left">{props.record.rehabType}</TableCell>
-      <TableCell align="left">{props.record.colour}</TableCell>
+      <TableCell align="left" sx={{ display: { xs: 'none', l: 'table-cell' }}}>{props.record.colour}</TableCell>
       <TableCell align="left">{props.record.patient}</TableCell>
-      <TableCell align="left">{props.record.age}</TableCell>
-      <TableCell align="left">{truncate(props.record.description)}</TableCell>
+      <TableCell align="left" sx={{ display: { xs: 'none', l: 'table-cell' }}}>{props.record.age}</TableCell>
+      <TableCell align="left" sx={{ display: { xs: 'none', l: 'table-cell' }}}>{truncate(props.record.description)}</TableCell>
       <TableCell align="left">
         <Box sx={{ '& > :not(style)': { m: 1 } }}>
           
@@ -126,11 +126,11 @@ export default function RecordList(props) {
               }
             }}>
 
-              <TableCell align="left">{resources.pt.FORM.REHAB_TYPE}</TableCell>
-              <TableCell align="left">{resources.pt.FORM.COLOUR}</TableCell>
+              <TableCell align="left" >{resources.pt.FORM.REHAB_TYPE}</TableCell>
+              <TableCell align="left" sx={{ display: { xs: 'none', l: 'table-cell' }}}>{resources.pt.FORM.COLOUR}</TableCell>
               <TableCell align="left">{resources.pt.FORM.PATIENT}</TableCell>
-              <TableCell align="left">{resources.pt.FORM.AGE}</TableCell>
-              <TableCell align="left">{resources.pt.FORM.DESCRIPTION}</TableCell>
+              <TableCell align="left" sx={{ display: { xs: 'none', l: 'table-cell' }}}>{resources.pt.FORM.AGE}</TableCell>
+              <TableCell align="left" sx={{ display: { xs: 'none', l: 'table-cell' }}}>{resources.pt.FORM.DESCRIPTION}</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
