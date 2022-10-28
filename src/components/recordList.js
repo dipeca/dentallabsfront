@@ -11,10 +11,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.secondary.main,
   },
-  // hide border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
 }));
 
 
@@ -110,7 +106,7 @@ export default function RecordList(props) {
   return (
 
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Grid container xs={1} sx={{ mt: 2, mb: 2 }}>
+      <Grid container xs={1} sx={{ mt: 2, mb: 2 }} justify="space-between" >
         {props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}
       </Grid>
       <TableContainer>
