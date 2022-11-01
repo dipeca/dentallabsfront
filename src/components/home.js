@@ -138,7 +138,7 @@ export default function Home(props) {
         alignItems="center"
       >
         <Grid item>
-          {(props.user==="636062ae0140e2eb0eee00f0" || props.user === "636062bf0140e2eb0eee00fa") && <FormControl>
+          {(props.user==="6360667d87edb1fade327d8b" || props.user === "6360663287edb1fade326b55") && <FormControl>
             <InputLabel id="select-user-label">Clínico</InputLabel>
             <Select
               labelId="select-user-label"
