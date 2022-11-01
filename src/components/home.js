@@ -55,7 +55,7 @@ export default function Home(props) {
 
   async function getRecords(user) {
     
-    const response = await fetch(`http://localhost:5010/records/${user}`);
+    const response = await fetch(`https://dentallabstapim.herokuapp.com/records/${user}`);
 
     if (!response.ok) {
       const message = `An error occurred: ${response.statusText}`;
@@ -71,7 +71,7 @@ export default function Home(props) {
     useEffect(() => {
       async function getUsers() {
   
-        const response = await fetch(`http://localhost:5010/users/`);
+        const response = await fetch(`https://dentallabstapim.herokuapp.com/users/`);
   
         if (!response.ok) {
           const message = `An error occurred: ${response.statusText}`;
@@ -99,7 +99,7 @@ export default function Home(props) {
 
   // This method will delete a record
   async function deleteRecord(id) {
-    await fetch(`http://localhost:5010/${id}`, {
+    await fetch(`https://dentallabstapim.herokuapp.com/${id}`, {
       method: "DELETE"
     });
 

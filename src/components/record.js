@@ -15,7 +15,7 @@ export default function Record(props) {
 
     async function getRecords(user) {
         console.log("getRecords:" + user);
-        const response = await fetch(`http://localhost:5010/records/${user}`);
+        const response = await fetch(`https://dentallabstapim.herokuapp.com/records/${user}`);
 
         if (!response.ok) {
             const message = `An error occurred: ${response.statusText}`;

@@ -12,7 +12,7 @@ export default function Login(props) {
 
     async function fetchData() {
         const id = textRef.current.value;
-        const response = await fetch(`http://localhost:5010/user/${id}`);
+        const response = await fetch(`https://dentallabstapim.herokuapp.com/user/${id}`);
 
         if (!response.ok) {
             const message = `Problema ao tentar encontrar o utilizador com o código de acesso ${id}.`;
