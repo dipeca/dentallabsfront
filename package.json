@@ -12,7 +12,6 @@
     "@mui/x-date-pickers": "^5.0.5",
     "bootstrap": "^5.2.2",
     "dayjs": "^1.11.6",
-    "material-ui-icons": "^1.0.0-beta.36",
     "moment": "^2.29.4",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
