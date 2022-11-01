@@ -2,10 +2,9 @@ import React, { useState } from "react";
 
 // We import all the components we need in our app
 import Navbar from "./components/navbar";
-import RecordList from "./components/recordList";
+import Home from "./components/home";
 import Edit from "./components/edit";
 import Login from "./components/login";
-import BottomBar from "./components/bottombar";
 
 
 // We import bootstrap to make our application look better.
@@ -28,7 +27,7 @@ const App = () => {
   const renderCenas = () => {
     console.log("dpca page" + page + " user:" + user);
     if (page === 1 && user != null) {
-      return <RecordList user={user} navigateTo={(user, page, idRecord) => changeUser(user, page, idRecord)}/>
+      return <Home user={user} selectedUser={user} navigateTo={(user, page, idRecord) => changeUser(user, page, idRecord)}/>
     } else  if (page === 2 && user != null) {
       return <Edit user={user} language={language} navigateTo={(user, page) => changeUser(user, page)} idRecord={idRecord} isEdit={true}/>
     } else  if (page === 3 && user != null) {
@@ -41,7 +40,6 @@ const App = () => {
     <div>
       <Navbar user={user} navigateTo={(user, page) => changeUser(user, page)}/>
       {renderCenas()}
-      <BottomBar user={user} navigateTo={(user, page) => changeUser(user, page)}/>
     </div>
   );
 };
