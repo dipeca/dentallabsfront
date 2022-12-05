@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { resources } from '../resource'
 import BasicMenu from "./BasicMenu";
-import { TableContainer, TableHead, Table, TableCell, TableRow, TableBody, styled, Container, Box} from '@mui/material';
+import { TableContainer, TableHead, Table, TableCell, TableRow, TableBody, styled, Container, Box } from '@mui/material';
 import { Grid, Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
+import axios from "axios";
+
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -15,11 +17,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const service = axios.create({
+  baseURL: process.env.REACT_APP_BACKEND_URL,
+  withCredentials: true, // Cookie is sent to client when using this service. (used for session)
+});
 
 export default function Home(props) {
   const [records, setRecords] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = React.useState(props.selectedUser);
+
+  function errorHandler(error) {
+    if (error) {
+      alert("Sessão expirada, por favor refresque a página no seu browser.");
+      console.log(error);
+      throw error;
+    }
+    throw error;
+  }
 
   function truncate(str) {
     return str.length > 100 ? str.substring(0, 95) + "..." : str;
@@ -54,40 +69,49 @@ export default function Home(props) {
   }
 
   async function getRecords(user) {
-    
-    const response = await fetch(`https://dentallabstapim.herokuapp.com/records/${user}`);
 
-    if (!response.ok) {
-      const message = `An error occurred: ${response.statusText}`;
-      window.alert(message);
-      return;
-    }
+    return service
+      .get("/records/" + user)
+      .then((res) => { setRecords(res.data) })
+      .catch(errorHandler);
 
-    const records = await response.json();
-    setRecords(records);
+    // const response = await fetch(process.env.REACT_APP_BACKEND_URL + `/records/${user}`);
+
+    // if (!response.ok) {
+    //   const message = `An error occurred: ${response.statusText}`;
+    //   window.alert(message);
+    //   return;
+    // }
+
+    // const records = await response.json();
+    // setRecords(records);
   }
 
-    // This method fetches the records from the database.
-    useEffect(() => {
-      async function getUsers() {
-  
-        const response = await fetch(`https://dentallabstapim.herokuapp.com/users/`);
-  
-        if (!response.ok) {
-          const message = `An error occurred: ${response.statusText}`;
-          window.alert(message);
-          return;
-        }
-  
-        const records = await response.json();
-        setUsers(records);
-      }
-  
-      console.log("useEffect users:" + selectedUser);
-      getUsers();
-  
-      return;
-    }, []);
+  // This method fetches the records from the database.
+  useEffect(() => {
+    async function getUsers() {
+
+      return service
+        .get(`/users/`)
+        .then((res) => {
+
+          if (res.status != 200) {
+            const message = `An error occurred: ${res.statusText}`;
+            window.alert(message);
+            return;
+          }
+          const records = res.data;
+          setUsers(records);
+        })
+        .catch(errorHandler);
+
+    }
+
+    console.log("useEffect users:" + selectedUser);
+    getUsers();
+
+    return;
+  }, []);
 
   // This method fetches the records from the database.
   useEffect(() => {
@@ -99,7 +123,7 @@ export default function Home(props) {
 
   // This method will delete a record
   async function deleteRecord(id) {
-    await fetch(`https://dentallabstapim.herokuapp.com/${id}`, {
+    await fetch(process.env.REACT_APP_BACKEND_URL + `/${id}`, {
       method: "DELETE"
     });
 
@@ -109,7 +133,7 @@ export default function Home(props) {
 
   // This method will map out the records on the table
   function recordList() {
-
+    console.log(Object.keys(records));
     return records.map((record) => {
       return (
         <Record
@@ -138,7 +162,7 @@ export default function Home(props) {
         alignItems="center"
       >
         <Grid item>
-          {(props.user==="6360667d87edb1fade327d8b" || props.user === "6360663287edb1fade326b55") && <FormControl>
+          {(props.user === "636062ae0140e2eb0eee00f0" || props.user === "6360663287edb1fade326b55") && <FormControl>
             <InputLabel id="select-user-label">Clínico</InputLabel>
             <Select
               labelId="select-user-label"

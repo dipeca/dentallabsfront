@@ -10,6 +10,8 @@ import Login from "./components/login";
 // We import bootstrap to make our application look better.
 import "bootstrap/dist/css/bootstrap.css";
 
+
+require("dotenv").config();
 const App = () => {
   const [language] = React.useState('pt')
 
@@ -25,7 +27,7 @@ const App = () => {
   }
 
   const renderCenas = () => {
-    console.log("dpca page" + page + " user:" + user);
+    //console.log("dpca page" + page + " user:" + Object.keys(Cookies.get('user')));
     if (page === 1 && user != null) {
       return <Home user={user} selectedUser={user} navigateTo={(user, page, idRecord) => changeUser(user, page, idRecord)}/>
     } else  if (page === 2 && user != null) {

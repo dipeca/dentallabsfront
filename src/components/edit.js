@@ -34,7 +34,7 @@ export default function Edit(props) {
   useEffect(() => {
     async function fetchData() {
       const id = props.idRecord;
-      const response = await fetch(`https://dentallabstapim.herokuapp.com/record/${id}`);
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + `/record/${id}`);
 
       if (!response.ok) {
         const message = `An error has occurred: ${response.statusText}`;
@@ -85,7 +85,7 @@ export default function Edit(props) {
     };
 
     // This will send a post request to update the data in the database.
-    await fetch(`https://dentallabstapim.herokuapp.com/update/${props.idRecord}`, {
+    await fetch(process.env.REACT_APP_BACKEND_URL + `/update/${props.idRecord}`, {
       method: "POST",
       body: JSON.stringify(editedPerson),
       headers: {
@@ -104,7 +104,7 @@ export default function Edit(props) {
     let newPerson = { ...form };
     newPerson.state = "Novo";
 
-    await fetch("https://dentallabstapim.herokuapp.com/record/add", {
+    await fetch(process.env.REACT_APP_BACKEND_URL + "/record/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
