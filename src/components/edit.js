@@ -8,8 +8,7 @@ import { RadioGroup, Radio, FormControlLabel } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers'
 import MenuItem from '@mui/material/MenuItem';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import Chip from '@mui/material/Chip';
 import axios from "axios";
@@ -198,7 +197,7 @@ export default function Edit(props) {
                   <MenuItem value="Em processamento">Em processamento</MenuItem>
                   <MenuItem value="Fechado">Fechado</MenuItem>
                 </Select> }
-                {(!props.user.role || props.user.role != "admin") &&  <Chip label={form.state} color="primary" variant="outlined" /> }
+                {(!props.user.role || props.user.role !== "admin") &&  <Chip label={form.state} color="primary" variant="outlined" /> }
               </Box>
               <Box sx={{ pt: 2 }}>
                 <TextField required

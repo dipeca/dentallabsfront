@@ -28,8 +28,6 @@ export default function Login(props) {
             .get("/me")
             .then((res) => { if (res.data && res.data._id) fetchData(res.data.id) })
             .catch(errorHandler);
-
-        return;
     }, []);
 
     const textRef = createRef();
@@ -42,7 +40,7 @@ export default function Login(props) {
             .get(`/user/${id}`)
             .then((res) => {
 
-                if (res.status != 200) {
+                if (res.status !== 200) {
                     const message = `Problema ao tentar encontrar o utilizador com o código de acesso ${id}.`;
                     window.alert(message);
                     return;

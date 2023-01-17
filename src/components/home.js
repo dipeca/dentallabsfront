@@ -103,7 +103,7 @@ export default function Home(props) {
         .get(`/users/`)
         .then((res) => {
 
-          if (res.status != 200) {
+          if (res.status !== 200) {
             const message = `An error occurred: ${res.statusText}`;
             window.alert(message);
             return;
