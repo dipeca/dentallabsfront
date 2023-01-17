@@ -8,6 +8,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
+import Chip from '@mui/material/Chip';
+import { TextField } from '@material-ui/core';
 import axios from "axios";
 
 
@@ -25,7 +27,11 @@ const service = axios.create({
 export default function Home(props) {
   const [records, setRecords] = useState([]);
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = React.useState(props.selectedUser);
+  const [selectedUser, setSelectedUser] = React.useState(props.selectedUser._id);
+  const [filterState, setFilterState] = React.useState("Todos");
+
+  const [filterPatient, setFilterPatient] = useState("");
+  const [query, setQuery] = useState("");
 
   function errorHandler(error) {
     if (error) {
@@ -37,7 +43,7 @@ export default function Home(props) {
   }
 
   function truncate(str) {
-    return str.length > 100 ? str.substring(0, 95) + "..." : str;
+    return str && str.length > 100 ? str.substring(0, 95) + "..." : str;
   }
 
   const Buttons = (props) => (
@@ -50,11 +56,12 @@ export default function Home(props) {
 
   const Record = (props) => (
     <StyledTableRow>
-      <TableCell align="left">{props.record.state}</TableCell>
-      <TableCell align="left">{props.record.rehabType}</TableCell>
-      <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{props.record.colour}</TableCell>
+      <TableCell align="left"><Chip label={props.record.state} color="primary" variant="outlined" /></TableCell>
+      <TableCell align="left">{props.record.clinic}</TableCell>
+      <TableCell align="left">{props.record.doctor}</TableCell>
       <TableCell align="left">{props.record.patient}</TableCell>
-      <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{props.record.age}</TableCell>
+      <TableCell align="left">{props.record.age}</TableCell>
+      <TableCell align="left"> <Chip label={props.record.rehabType} color="primary" variant="outlined" /></TableCell>
       <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{truncate(props.record.description)}</TableCell>
       <TableCell align="left">
         <Box sx={{ '& > :not(style)': { m: 1 } }}>
@@ -68,10 +75,11 @@ export default function Home(props) {
     props.navigateTo(props.user, 2, _id);
   }
 
-  async function getRecords(user) {
-
+  async function getRecords(user, filterState, filterPatient) {
+    let payload = { params : { user: user, state: filterState, patient: filterPatient }}
+    console.log("getRecords " + user + " " + filterState + " " + filterPatient);
     return service
-      .get("/records/" + user)
+      .get("/records/", payload)
       .then((res) => { setRecords(res.data) })
       .catch(errorHandler);
 
@@ -87,7 +95,7 @@ export default function Home(props) {
     // setRecords(records);
   }
 
-  // This method fetches the records from the database.
+  // This method fetches the users from the database.
   useEffect(() => {
     async function getUsers() {
 
@@ -107,26 +115,34 @@ export default function Home(props) {
 
     }
 
-    console.log("useEffect users:" + selectedUser);
     getUsers();
 
     return;
   }, []);
 
+  useEffect(() => {
+    const timeOutId = setTimeout(() => setFilterPatient(query), 500);
+    return () => clearTimeout(timeOutId);
+  }, [query]);
+  
   // This method fetches the records from the database.
   useEffect(() => {
-    console.log("useEffect:" + selectedUser);
-    getRecords(selectedUser);
-
+    getRecords(selectedUser, filterState, filterPatient);
     return;
-  }, [selectedUser]);
+  }, [selectedUser, filterState, filterPatient]);
 
   // This method will delete a record
   async function deleteRecord(id) {
+
+    service
+      .delete("/" + id)
+      .catch(errorHandler);
+
+    /*
     await fetch(process.env.REACT_APP_BACKEND_URL + `/${id}`, {
       method: "DELETE"
     });
-
+*/
     const newRecords = records.filter((el) => el._id !== id);
     setRecords(newRecords);
   }
@@ -147,8 +163,14 @@ export default function Home(props) {
     });
   }
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChangeSelectedUser = (event: SelectChangeEvent) => {
+    console.log("handleChangeSelectedUser:" + event.target.value);
     setSelectedUser(event.target.value);
+  };
+
+  const handleChangeFilterState = (event: SelectChangeEvent) => {
+    console.log("handleChangeSilterState:" + event.target.value);
+    setFilterState(event.target.value);
   };
 
   // This following section will display the table with the records of individuals.
@@ -162,14 +184,36 @@ export default function Home(props) {
         alignItems="center"
       >
         <Grid item>
-          {(props.user === "636062ae0140e2eb0eee00f0" || props.user === "6360663287edb1fade326b55") && <FormControl>
+          <FormControl>
+            <InputLabel id="select-user-label">Estado</InputLabel>
+            <Select
+              labelId="select-user-label"
+              id="select-user"
+              value={filterState}
+              label="Estado"
+              onChange={handleChangeFilterState}
+            >
+              <MenuItem value="Todos">Todos</MenuItem>
+              <MenuItem value="Novo">Novo</MenuItem>
+              <MenuItem value="Aguarda moldagem">Aguarda moldagem</MenuItem>
+              <MenuItem value="Inf. insuficiente">Inf. insuficiente</MenuItem>
+              <MenuItem value="Em processamento">Em processamento</MenuItem>
+              <MenuItem value="Fechado">Fechado</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item>
+          <TextField label={resources.pt.FORM.PATIENT} id="outlined-size-normal" defaultValue="" onChange={event => setQuery(event.target.value)} />
+        </Grid>
+        <Grid item>
+          {(props.user.role && props.user.role === "admin") && <FormControl>
             <InputLabel id="select-user-label">Clínico</InputLabel>
             <Select
               labelId="select-user-label"
               id="select-user"
               value={selectedUser}
               label="Clínico"
-              onChange={handleChange}
+              onChange={handleChangeSelectedUser}
             >
               <MenuItem key={-1} value={-1}>Todos</MenuItem>
               {users.map((user, index) => (
@@ -182,6 +226,16 @@ export default function Home(props) {
               ))}
             </Select>
           </FormControl>}
+        </Grid>
+        <Grid item></Grid>
+        <Grid item>
+          {1 == 2 &&
+            <InputLabel id="select-user-label">Clínico</InputLabel>}
+
+        </Grid>
+        <Grid item>
+          {1 == 2 &&
+            <InputLabel id="select-user-label">Clínico</InputLabel>}
         </Grid>
         <Grid item>{props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}</Grid>
       </Grid>
@@ -197,10 +251,11 @@ export default function Home(props) {
               }
             }}>
               <TableCell align="left" >Estado</TableCell>
-              <TableCell align="left" >{resources.pt.FORM.REHAB_TYPE}</TableCell>
-              <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{resources.pt.FORM.COLOUR}</TableCell>
+              <TableCell align="left" >{resources.pt.FORM.CLINIC}</TableCell>
+              <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{resources.pt.FORM.DOCTOR}</TableCell>
               <TableCell align="left">{resources.pt.FORM.PATIENT}</TableCell>
-              <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{resources.pt.FORM.AGE}</TableCell>
+              <TableCell align="left">{resources.pt.FORM.AGE}</TableCell>
+              <TableCell align="left" >{resources.pt.FORM.REHAB_TYPE}</TableCell>
               <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{resources.pt.FORM.DESCRIPTION}</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
@@ -211,6 +266,6 @@ export default function Home(props) {
 
         </Table>
       </TableContainer>
-    </Container>
+    </Container >
   );
 }

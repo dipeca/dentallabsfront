@@ -6,10 +6,29 @@ import { Typography } from '@mui/material';
 import { Button, Container, Box, FormLabel, Divider, Grid } from '@mui/material';
 import { RadioGroup, Radio, FormControlLabel } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers'
+import MenuItem from '@mui/material/MenuItem';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import InputLabel from '@mui/material/InputLabel';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import Chip from '@mui/material/Chip';
+import axios from "axios";
+
+const service = axios.create({
+  baseURL: process.env.REACT_APP_BACKEND_URL,
+  withCredentials: true, // Cookie is sent to client when using this service. (used for session)
+});
 
 export default function Edit(props) {
+
+  function errorHandler(error) {
+    if (error) {
+      alert("Sessão expirada, por favor refresque a página no seu browser.");
+      console.log(error);
+      throw error;
+    }
+    throw error;
+  }
 
   const _resources = resources[props.language]
 
@@ -26,7 +45,8 @@ export default function Edit(props) {
     doc: "",
     sent_to_email: "",
     trials: "",
-    user: props.user,
+    state: "Novo",
+    user: props.user._id,
   });
   const params = useParams();
   const navigate = useNavigate();
@@ -34,22 +54,28 @@ export default function Edit(props) {
   useEffect(() => {
     async function fetchData() {
       const id = props.idRecord;
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL + `/record/${id}`);
+      return service
+        .get("/record/" + id)
+        .then((res) => { if (res && res.data) {setForm(res.data) }})
+        .catch(errorHandler);
 
-      if (!response.ok) {
-        const message = `An error has occurred: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
 
-      const record = await response.json();
-      if (!record) {
-        window.alert(`Record with id ${id} not found`);
-        navigate("/");
-        return;
-      }
+      // const response = await fetch(process.env.REACT_APP_BACKEND_URL + `${id}`);
 
-      setForm(record);
+      // if (!response.ok) {
+      //   const message = `An error has occurred: ${response.statusText}`;
+      //   window.alert(message);
+      //   return;
+      // }
+
+      // const record = await response.json();
+      // if (!record) {
+      //   window.alert(`Record with id ${id} not found`);
+      //   navigate("/");
+      //   return;
+      // }
+
+      // setForm(record);
     }
 
     if (props.isEdit) {
@@ -68,7 +94,7 @@ export default function Edit(props) {
 
   //deal with edition
   async function handlEdit(e) {
-    const editedPerson = {
+    const record = {
       clinic: form.clinic,
       doctor: form.doctor,
       patient: form.patient,
@@ -79,20 +105,26 @@ export default function Edit(props) {
       colour: form.colour,
       enum_mold: form.enum_mold,
       doc: form.doc,
+      state: form.state,
       sent_to_email: form.sent_to_email,
-      trials: form.trials,
-      user: props.user,
+      trials: form.trials
     };
 
-    // This will send a post request to update the data in the database.
-    await fetch(process.env.REACT_APP_BACKEND_URL + `/update/${props.idRecord}`, {
-      method: "POST",
-      body: JSON.stringify(editedPerson),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    });
 
+    service
+      .post("/update/" + props.idRecord, { record })
+      .catch(errorHandler);
+
+
+    // This will send a post request to update the data in the database.
+    /* await fetch(process.env.REACT_APP_BACKEND_URL + `/update/${props.idRecord}`, {
+       method: "POST",
+       body: JSON.stringify(editedPerson),
+       headers: {
+         'Content-Type': 'application/json'
+       },
+     });
+ */
     props.navigateTo(props.user, 1, props.idRecord);
   }
 
@@ -101,9 +133,15 @@ export default function Edit(props) {
     e.preventDefault();
 
     // When a post request is sent to the create url, we'll add a new record to the database.
-    let newPerson = { ...form };
-    newPerson.state = "Novo";
+    let newRecord = { ...form };
+    //newRecord.state = "Novo";
 
+    let record = newRecord;
+    service
+      .post("/record/add", { record })
+      .catch(errorHandler);
+
+    /*
     await fetch(process.env.REACT_APP_BACKEND_URL + "/record/add", {
       method: "POST",
       headers: {
@@ -115,9 +153,11 @@ export default function Edit(props) {
         window.alert(error);
         return;
       });
+*/
 
     setForm({ age: "", rehabType: "", description: "", colour: "" });
     props.navigateTo(props.user, 1, props.idRecord);
+
   }
 
   async function onSubmit(e) {
@@ -134,11 +174,7 @@ export default function Edit(props) {
   return (
     <div>
       <Container maxWidth="md">
-        <Typography variant="h4" component="h4" sx={{ color: "#1976d2" }}>
-          {_resources.FORM.NEW}
-        </Typography>
         <form onSubmit={onSubmit} style={{ width: '100%' }}>
-
           <Box
             justifyContent="center"
             alignItems="center"
@@ -149,6 +185,21 @@ export default function Edit(props) {
             autoComplete="off"
           >
             <div>
+            <Box sx={{ pt: 2 }}>
+                {(props.user.role && props.user.role === "admin") && <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.state}
+                  onChange={(e) => updateForm({ state: e.target.value })}
+                >
+                  <MenuItem value="Novo">Novo</MenuItem>
+                  <MenuItem value="Aguarda moldagem">Aguarda moldagem</MenuItem>
+                  <MenuItem value="Inf. insuficiente">Inf. insuficiente</MenuItem>
+                  <MenuItem value="Em processamento">Em processamento</MenuItem>
+                  <MenuItem value="Fechado">Fechado</MenuItem>
+                </Select> }
+                {(!props.user.role || props.user.role != "admin") &&  <Chip label={form.state} color="primary" variant="outlined" /> }
+              </Box>
               <Box sx={{ pt: 2 }}>
                 <TextField required
                   label={_resources.FORM.CLINIC}

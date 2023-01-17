@@ -55,7 +55,7 @@ export default function Login(props) {
                     return;
                 }
 
-                props.onLogin(user._id, 1);
+                props.onLogin(user, 1);
             })
             .catch(errorHandler);
 

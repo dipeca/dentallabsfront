@@ -14,7 +14,7 @@ export const resources = {
               NEW : "Novo pedido",
               CREATE : "Criar",
               CLINIC:"Clínica",
-              DOCTOR:"Clínico",
+              DOCTOR:"Doutor",
               PATIENT:"Paciente",
               TRIALS:"Provas"
             },
