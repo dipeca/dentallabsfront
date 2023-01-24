@@ -6,12 +6,15 @@ import { Typography } from '@mui/material';
 import { Button, Container, Box, FormLabel, Divider, Grid } from '@mui/material';
 import { RadioGroup, Radio, FormControlLabel } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MenuItem from '@mui/material/MenuItem';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import Chip from '@mui/material/Chip';
 import axios from "axios";
+// or for Day.js
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const service = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
@@ -46,6 +49,12 @@ export default function Edit(props) {
     trials: "",
     state: "Novo",
     user: props.user._id,
+    firstTrial: "",
+    secondTrial: "",
+    thirdTrial: "",
+    firstTrialNote: "",
+    secondTrialNote: "",
+    thirdTrialNote: ""
   });
   const params = useParams();
   const navigate = useNavigate();
@@ -55,26 +64,8 @@ export default function Edit(props) {
       const id = props.idRecord;
       return service
         .get("/record/" + id)
-        .then((res) => { if (res && res.data) {setForm(res.data) }})
+        .then((res) => { if (res && res.data) { setForm(res.data) } })
         .catch(errorHandler);
-
-
-      // const response = await fetch(process.env.REACT_APP_BACKEND_URL + `${id}`);
-
-      // if (!response.ok) {
-      //   const message = `An error has occurred: ${response.statusText}`;
-      //   window.alert(message);
-      //   return;
-      // }
-
-      // const record = await response.json();
-      // if (!record) {
-      //   window.alert(`Record with id ${id} not found`);
-      //   navigate("/");
-      //   return;
-      // }
-
-      // setForm(record);
     }
 
     if (props.isEdit) {
@@ -105,25 +96,21 @@ export default function Edit(props) {
       enum_mold: form.enum_mold,
       doc: form.doc,
       state: form.state,
-      sent_to_email: form.sent_to_email,
-      trials: form.trials
+      firstTrial: form.firstTrial,
+      firstTrialNote: form.firstTrialNote,
+      secondTrial: form.secondTrial,
+      secondTrialNote: form.secondTrialNote,
+      thirdTrial: form.thirdTrial,
+      thirdTrialNote: form.thirdTrialNote,
     };
 
-
+    // This will send a post request to update the data in the database.
     service
       .post("/update/" + props.idRecord, { record })
       .catch(errorHandler);
 
 
-    // This will send a post request to update the data in the database.
-    /* await fetch(process.env.REACT_APP_BACKEND_URL + `/update/${props.idRecord}`, {
-       method: "POST",
-       body: JSON.stringify(editedPerson),
-       headers: {
-         'Content-Type': 'application/json'
-       },
-     });
- */
+
     props.navigateTo(props.user, 1, props.idRecord);
   }
 
@@ -139,20 +126,6 @@ export default function Edit(props) {
     service
       .post("/record/add", { record })
       .catch(errorHandler);
-
-    /*
-    await fetch(process.env.REACT_APP_BACKEND_URL + "/record/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPerson),
-    })
-      .catch(error => {
-        window.alert(error);
-        return;
-      });
-*/
 
     setForm({ age: "", rehabType: "", description: "", colour: "" });
     props.navigateTo(props.user, 1, props.idRecord);
@@ -171,158 +144,159 @@ export default function Edit(props) {
 
   // This following section will display the form that takes input from the user to update the data.
   return (
-    <div>
-      <Container maxWidth="md">
-        <form onSubmit={onSubmit} style={{ width: '100%' }}>
-          <Box
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              '& .MuiTextField-root': { m: 1, width: '100%', display: 'flex' },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <div>
-            <Box sx={{ pt: 2 }}>
-                {(props.user.role && props.user.role === "admin") && <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={form.state}
-                  onChange={(e) => updateForm({ state: e.target.value })}
-                >
-                  <MenuItem value="Novo">Novo</MenuItem>
-                  <MenuItem value="Aguarda moldagem">Aguarda moldagem</MenuItem>
-                  <MenuItem value="Inf. insuficiente">Inf. insuficiente</MenuItem>
-                  <MenuItem value="Em processamento">Em processamento</MenuItem>
-                  <MenuItem value="Fechado">Fechado</MenuItem>
-                </Select> }
-                {(!props.user.role || props.user.role !== "admin") &&  <Chip label={form.state} color="primary" variant="outlined" /> }
-              </Box>
-              <Box sx={{ pt: 2 }}>
-                <TextField required
-                  label={_resources.FORM.CLINIC}
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  id="clinic"
-                  value={form.clinic}
-                  onChange={(e) => updateForm({ clinic: e.target.value })}
-                />
-              </Box>
-              <Box>
-                <TextField required
-                  label={_resources.FORM.DOCTOR}
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  id="doctor"
-                  value={form.doctor}
-                  onChange={(e) => updateForm({ doctor: e.target.value })}
-                />
-              </Box>
-              <Box>
-                <TextField required
-                  fullWidth
-                  label={_resources.FORM.PATIENT}
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  id="patient"
-                  value={form.patient}
-                  onChange={(e) => updateForm({ patient: e.target.value })}
-                />
-              </Box>
-              <Box sx={{ width: '30%' }}>
-                <TextField required
-                  fullWidth
-                  label={_resources.FORM.AGE}
-                  variant="outlined"
-                  type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{ inputMode: 'numeric', pattern: '[0-9][0-9]' }}
-                  id="age"
-                  value={form.age}
-                  onChange={(e) => updateForm({ age: e.target.value })}
-                />
-              </Box>
-            </div>
-            <Divider variant="middle" />
-            <div>
-              <Box sx={{ m: 2, pt: 2 }}>
-                <FormLabel id="rehabType-label">{_resources.FORM.REHAB_TYPE}</FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby="rehabType-label"
-                  name="rehabType"
-                  value={form.rehabType}
-                  onChange={(e) => updateForm({ rehabType: e.target.value })}
-                >
-                  <FormControlLabel
-                    value={_resources.FORM.REHAB_TYPE_MONO}
-                    label={_resources.FORM.REHAB_TYPE_MONO}
-                    control={<Radio />}
-                    labelPlacement="end"
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div>
+        <Container maxWidth="md">
+          <form onSubmit={onSubmit} style={{ width: '100%' }}>
+            <Box
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                '& .MuiTextField-root': { m: 1, width: '100%', display: 'flex' },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <div>
+                <Box sx={{ pt: 2 }}>
+                  {(props.user.role && props.user.role === "admin") && <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={form.state}
+                    onChange={(e) => updateForm({ state: e.target.value })}
+                  >
+                    <MenuItem value="Novo">Novo</MenuItem>
+                    <MenuItem value="Aguarda moldagem">Aguarda moldagem</MenuItem>
+                    <MenuItem value="Inf. insuficiente">Inf. insuficiente</MenuItem>
+                    <MenuItem value="Em processamento">Em processamento</MenuItem>
+                    <MenuItem value="Completo">Completo</MenuItem>
+                  </Select>}
+                  {(!props.user.role || props.user.role !== "admin") && <Chip label={form.state} color="primary" variant="outlined" />}
+                </Box>
+                <Box sx={{ pt: 2 }}>
+                  <TextField required
+                    label={_resources.FORM.CLINIC}
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    id="clinic"
+                    value={form.clinic}
+                    onChange={(e) => updateForm({ clinic: e.target.value })}
                   />
-                  <FormControlLabel
-                    value={_resources.FORM.REHAB_TYPE_ESTRA_BASE}
-                    label={_resources.FORM.REHAB_TYPE_ESTRA_BASE}
-                    control={<Radio />}
-                    labelPlacement="end"
+                </Box>
+                <Box>
+                  <TextField required
+                    label={_resources.FORM.DOCTOR}
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    id="doctor"
+                    value={form.doctor}
+                    onChange={(e) => updateForm({ doctor: e.target.value })}
                   />
-                  <FormControlLabel
-                    value={_resources.FORM.REHAB_TYPE_ESTRA_ADVANCED}
-                    label={_resources.FORM.REHAB_TYPE_ESTRA_ADVANCED}
-                    control={<Radio />}
-                    labelPlacement="end"
+                </Box>
+                <Box>
+                  <TextField required
+                    fullWidth
+                    label={_resources.FORM.PATIENT}
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    id="patient"
+                    value={form.patient}
+                    onChange={(e) => updateForm({ patient: e.target.value })}
                   />
-                </RadioGroup>
+                </Box>
+                <Box sx={{ width: '30%' }}>
+                  <TextField required
+                    fullWidth
+                    label={_resources.FORM.AGE}
+                    variant="outlined"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{ inputMode: 'numeric', pattern: '[0-9][0-9]' }}
+                    id="age"
+                    value={form.age}
+                    onChange={(e) => updateForm({ age: e.target.value })}
+                  />
+                </Box>
+              </div>
+              <Divider variant="middle" />
+              <div>
+                <Box sx={{ m: 2, pt: 2 }}>
+                  <FormLabel id="rehabType-label">{_resources.FORM.REHAB_TYPE}</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="rehabType-label"
+                    name="rehabType"
+                    value={form.rehabType}
+                    onChange={(e) => updateForm({ rehabType: e.target.value })}
+                  >
+                    <FormControlLabel
+                      value={_resources.FORM.REHAB_TYPE_MONO}
+                      label={_resources.FORM.REHAB_TYPE_MONO}
+                      control={<Radio />}
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel
+                      value={_resources.FORM.REHAB_TYPE_ESTRA_BASE}
+                      label={_resources.FORM.REHAB_TYPE_ESTRA_BASE}
+                      control={<Radio />}
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel
+                      value={_resources.FORM.REHAB_TYPE_ESTRA_ADVANCED}
+                      label={_resources.FORM.REHAB_TYPE_ESTRA_ADVANCED}
+                      control={<Radio />}
+                      labelPlacement="end"
+                    />
+                  </RadioGroup>
 
 
-              </Box>
-              <Box sx={{ pt: 2, display: 'flex' }}>
-                <TextField required
+                </Box>
+                <Box sx={{ pt: 2, display: 'flex' }}>
+                  <TextField required
+                    fullWidth
+                    multiline
+                    minRows={6}
+                    label={_resources.FORM.DESCRIPTION}
+                    aria-label="minimum height"
+                    variant="outlined"
+                    id="description"
+                    value={form.description}
+                    onChange={(e) => updateForm({ description: e.target.value })}
+                  />
+                </Box>
+                <Box sx={{ display: 'flex' }}>
+                  <TextField required
+                    fullWidth
+                    variant="outlined"
+                    label={_resources.FORM.COLOUR}
+                    id="colour"
+                    value={form.colour}
+                    onChange={(e) => updateForm({ colour: e.target.value })}
+                  />
+                </Box>
+              </div>
+              <Divider variant="middle" />
+              <div><Box sx={{ pt: 2 }}>
+                <TextField
                   fullWidth
                   multiline
                   minRows={6}
-                  label={_resources.FORM.DESCRIPTION}
-                  aria-label="minimum height"
                   variant="outlined"
-                  id="description"
-                  value={form.description}
-                  onChange={(e) => updateForm({ description: e.target.value })}
+                  label={_resources.FORM.ENUM_MOLD}
+                  id="enum_mold"
+                  value={form.enum_mold}
+                  onChange={(e) => updateForm({ enum_mold: e.target.value })}
                 />
               </Box>
-              <Box sx={{ display: 'flex' }}>
-                <TextField required
-                  fullWidth
-                  variant="outlined"
-                  label={_resources.FORM.COLOUR}
-                  id="colour"
-                  value={form.colour}
-                  onChange={(e) => updateForm({ colour: e.target.value })}
-                />
-              </Box>
-            </div>
-            <Divider variant="middle" />
-            <div><Box sx={{ pt: 2 }}>
-              <TextField
-                fullWidth
-                multiline
-                minRows={6}
-                variant="outlined"
-                label={_resources.FORM.ENUM_MOLD}
-                id="enum_mold"
-                value={form.enum_mold}
-                onChange={(e) => updateForm({ enum_mold: e.target.value })}
-              />
-            </Box>
-              <Box>
+                {/*              <Box>
                 <TextField
                   fullWidth
                   multiline
@@ -345,88 +319,97 @@ export default function Edit(props) {
                   value={form.sent_to_email}
                   onChange={(e) => updateForm({ sent_to_email: e.target.value })}
                 />
+                </Box> */}
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+
+                  <Box sx={{ ml: 1, mt: 2 }}>
+                    <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
+                      {_resources.FORM.TRIALS}
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={4} sx={{ ml: 1, mt: 2 }}>
+                    <Grid item xs={4}>
+                      <DesktopDatePicker
+                        disabled={!(props.user.role && props.user.role === "admin")}
+                        label="1ª"
+                        inputFormat="DD/MM/YYYY"
+                        value={form.firstTrial}
+                        onChange={(newValue: Dayjs | null) => updateForm({ firstTrial: newValue })}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        disabled={!(props.user.role && props.user.role === "admin")}
+                        label="Nota"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        id="first"
+                        value={form.firstTrialNote}
+                        onChange={(e) => updateForm({ firstTrialNote: e.target.value })}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                    <DesktopDatePicker
+                        disabled={!(props.user.role && props.user.role === "admin")}
+                        label="2ª"
+                        inputFormat="DD/MM/YYYY"
+                        value={form.secondTrial}
+                        onChange={(newValue: Dayjs | null) => updateForm({ secondTrial : newValue })}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                      </Grid>
+                      <Grid item xs={6}>
+                      <TextField
+                        disabled={!(props.user.role && props.user.role === "admin")}
+                        label="Nota"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        id="first"
+                        value={form.secondTrialNote}
+                        onChange={(e) => updateForm({ secondTrialNote: e.target.value })}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                    <DesktopDatePicker
+                        disabled={!(props.user.role && props.user.role === "admin")}
+                        label="3ª"
+                        inputFormat="DD/MM/YYYY"
+                        value={form.secondTrial}
+                        onChange={(newValue: Dayjs | null) => updateForm({ thirdTrial : newValue })}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                      </Grid>
+                      <Grid item xs={6}>
+                      <TextField
+                        disabled={!(props.user.role && props.user.role === "admin")}
+                        label="Nota"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        id="first"
+                        value={form.thirdTrialNote}
+                        onChange={(e) => updateForm({ secondTrialNote: e.target.value })}
+                      />
+                    </Grid>
+                  </Grid>
+                </LocalizationProvider>
+
+              </div>
+              <Divider variant="middle" />
+              <Box sx={{ m: 1, p: 1 }}>
+                <Button variant="outlined" type="submit">{_resources.FORM.CREATE}</Button>
               </Box>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-
-                <Box sx={{ ml: 1, mt: 2 }}>
-                  <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
-                    {_resources.FORM.TRIALS}
-                  </Typography>
-                </Box>
-                <Grid container spacing={3} sx={{ ml: 1, mt: 2 }}>
-                  <Grid container xs={4} sx={{ m: 1 }}>
-                    <TextField
-                      label="1st"
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      id="first"
-                      value={form.first}
-                      onChange={(e) => updateForm({ first: e.target.value })}
-                    />
-                    <DatePicker
-                      inputFormat="DD/MM/YYYY" onChange={(e) => updateForm({ first: e.target.value })} renderInput={(params) => <TextField {...params} />}>
-                    </DatePicker>
-
-                  </Grid>
-                  <Grid container xs={4} sx={{ m: 1 }}>
-                    <TextField
-                      label="2nd"
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      id="first"
-                      value={form.first}
-                      onChange={(e) => updateForm({ first: e.target.value })}
-                    />
-                    <DatePicker
-                      inputFormat="DD/MM/YYYY" onChange={(e) => updateForm({ first: e.target.value })} renderInput={(params) => <TextField {...params} />}>
-                    </DatePicker>
-                  </Grid>
-                  <Grid container xs={4} sx={{ m: 1 }}>
-                    <TextField
-                      label="3rd"
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      id="first"
-                      value={form.first}
-                      onChange={(e) => updateForm({ first: e.target.value })}
-                    />
-                    <DatePicker
-                      inputFormat="DD/MM/YYYY" onChange={(e) => updateForm({ first: e.target.value })} renderInput={(params) => <TextField {...params} />}>
-                    </DatePicker>
-                  </Grid>
-                  <Grid container xs={4} sx={{ m: 1 }}>
-                    <TextField
-                      label="Pronto"
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      id="first"
-                      value={form.first}
-                      onChange={(e) => updateForm({ first: e.target.value })}
-                    />
-                    <DatePicker
-                      inputFormat="DD/MM/YYYY" onChange={(e) => updateForm({ first: e.target.value })} renderInput={(params) => <TextField {...params} />}>
-                    </DatePicker>
-                  </Grid>
-                </Grid>
-              </LocalizationProvider>
-
-            </div>
-            <Divider variant="middle" />
-            <Box sx={{ m: 1, p: 1 }}>
-              <Button variant="outlined" type="submit">{_resources.FORM.CREATE}</Button>
             </Box>
-          </Box>
 
-        </form>
-      </Container>
-    </div>
+          </form>
+        </Container>
+      </div>
+    </LocalizationProvider>
   );
 }

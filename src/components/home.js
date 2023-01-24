@@ -48,7 +48,7 @@ export default function Home(props) {
 
   const Buttons = (props) => (
     <>
-      <Tooltip title="Cria nova encomenda" followCursor>
+      <Tooltip title="Criar novo processo" followCursor>
         <Button variant="contained" color="primary" size="large" onClick={(user, page) => props.navigateTo(props.user, 3)} aria-label="Criar">Criar</Button>
       </Tooltip>
     </>
@@ -56,6 +56,7 @@ export default function Home(props) {
 
   const Record = (props) => (
     <StyledTableRow>
+      <TableCell align="left">{props.record.number}</TableCell>
       <TableCell align="left"><Chip label={props.record.state} color="primary" variant="outlined" /></TableCell>
       <TableCell align="left">{props.record.clinic}</TableCell>
       <TableCell align="left">{props.record.doctor}</TableCell>
@@ -198,7 +199,7 @@ export default function Home(props) {
               <MenuItem value="Aguarda moldagem">Aguarda moldagem</MenuItem>
               <MenuItem value="Inf. insuficiente">Inf. insuficiente</MenuItem>
               <MenuItem value="Em processamento">Em processamento</MenuItem>
-              <MenuItem value="Fechado">Fechado</MenuItem>
+              <MenuItem value="Completo">Completo</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -250,6 +251,7 @@ export default function Home(props) {
                 color: "#444444"
               }
             }}>
+              <TableCell align="left" >Processo</TableCell>
               <TableCell align="left" >Estado</TableCell>
               <TableCell align="left" >{resources.pt.FORM.CLINIC}</TableCell>
               <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{resources.pt.FORM.DOCTOR}</TableCell>
