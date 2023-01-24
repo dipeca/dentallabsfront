@@ -49,7 +49,7 @@ export default function Home(props) {
   const Buttons = (props) => (
     <>
       <Tooltip title="Criar novo processo" followCursor>
-        <Button variant="contained" color="primary" size="large" onClick={(user, page) => props.navigateTo(props.user, 3)} aria-label="Criar">Criar</Button>
+        <Button sx={{ float: 'right' }}  variant="contained" color="primary" size="large" onClick={(user, page) => props.navigateTo(props.user, 3)} aria-label="Criar">Criar</Button>
       </Tooltip>
     </>
   );
@@ -59,7 +59,6 @@ export default function Home(props) {
       <TableCell align="left">{props.record.number}</TableCell>
       <TableCell align="left"><Chip label={props.record.state} color="primary" variant="outlined" /></TableCell>
       <TableCell align="left">{props.record.clinic}</TableCell>
-      <TableCell align="left">{props.record.doctor}</TableCell>
       <TableCell align="left">{props.record.patient}</TableCell>
       <TableCell align="left">{props.record.age}</TableCell>
       <TableCell align="left"> <Chip label={props.record.rehabType} color="primary" variant="outlined" /></TableCell>
@@ -180,11 +179,9 @@ export default function Home(props) {
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Grid
         container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
+        sx={{ border: 'solid 0px green' }}
       >
-        <Grid item>
+        <Grid item xs={1}>
           <FormControl>
             <InputLabel id="select-user-label">Estado</InputLabel>
             <Select
@@ -203,10 +200,10 @@ export default function Home(props) {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item>
-          <TextField label={resources.pt.FORM.PATIENT} id="outlined-size-normal" defaultValue="" onChange={event => setQuery(event.target.value)} />
+        <Grid item xs={2}>
+          <TextField label={resources.pt.FORM.PATIENT} id="outlined-size-normal" variant="outlined" defaultValue="" onChange={event => setQuery(event.target.value)} />
         </Grid>
-        <Grid item>
+        <Grid item xs={2}>
           {(props.user.role && props.user.role === "admin") && <FormControl>
             <InputLabel id="select-user-label">Clínico</InputLabel>
             <Select
@@ -238,7 +235,7 @@ export default function Home(props) {
           {1 == 2 &&
             <InputLabel id="select-user-label">Clínico</InputLabel>}
         </Grid>
-        <Grid item>{props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}</Grid>
+        <Grid item xs={7} >{props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}</Grid>
       </Grid>
       <TableContainer>
         <Table stickyHeader aria-label="simple table">

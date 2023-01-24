@@ -36,7 +36,7 @@ export default function Navbar(props) {
   const steps = [
     {
       label: 'Acesso à lista de processos',
-      description: `Cada utilizador da aplicação tem acesso a todos os processos criados. Para facilitar a visualização, os processos podem ser filtrados por estado`,
+      description: `Cada utilizador da aplicação tem acesso a todos os processos criados por si. Para facilitar a visualização, os processos podem ser filtrados por estado`,
     },
     {
       label: 'Criar um processo',
