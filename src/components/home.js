@@ -177,11 +177,12 @@ export default function Home(props) {
   return (
 
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Grid item xs={6} >{props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}</Grid>
       <Grid
         container
         sx={{ border: 'solid 0px green' }}
       >
-        <Grid item xs={1}>
+        <Grid item xs={3}>
           <FormControl>
             <InputLabel id="select-user-label">Estado</InputLabel>
             <Select
@@ -200,10 +201,10 @@ export default function Home(props) {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           <TextField label={resources.pt.FORM.PATIENT} id="outlined-size-normal" variant="outlined" defaultValue="" onChange={event => setQuery(event.target.value)} />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           {(props.user.role && props.user.role === "admin") && <FormControl>
             <InputLabel id="select-user-label">Clínico</InputLabel>
             <Select
@@ -225,17 +226,6 @@ export default function Home(props) {
             </Select>
           </FormControl>}
         </Grid>
-        <Grid item></Grid>
-        <Grid item>
-          {1 == 2 &&
-            <InputLabel id="select-user-label">Clínico</InputLabel>}
-
-        </Grid>
-        <Grid item>
-          {1 == 2 &&
-            <InputLabel id="select-user-label">Clínico</InputLabel>}
-        </Grid>
-        <Grid item xs={7} >{props.user && <Buttons user={props.user} navigateTo={(user, page) => props.navigateTo(user, page)} />}</Grid>
       </Grid>
       <TableContainer>
         <Table stickyHeader aria-label="simple table">
