@@ -35,22 +35,17 @@ export default function Navbar(props) {
 
   const steps = [
     {
-      label: 'Select campaign settings',
-      description: `For each ad campaign that you create, you can control how much
-                you're willing to spend on clicks and conversions, which networks
-                and geographical locations you want your ads to show on, and more.`,
+      label: 'Acesso à lista de processos',
+      description: `Cada utilizador da aplicação tem acesso a todos os processos criados. Para facilitar a visualização, os processos podem ser filtrados por estado`,
     },
     {
-      label: 'Create an ad group',
+      label: 'Criar um processo',
       description:
-        'An ad group contains one or more ads which target a shared set of keywords.',
+        'Ao clicar no botão de criar, poderá criar um novo processo. Terá de preencher os campos obrigatórios e submeter o formulário. O laboratório receberá uma notificação e atualizará o estado do pedido.',
     },
     {
-      label: 'Create an ad',
-      description: `Try out different ad text to see what brings in the most customers,
-                and learn how to enhance your ads using features like ad extensions.
-                If you run into any problems with your ads, find out how to tell if
-                they're running and how to resolve approval issues.`,
+      label: 'Editar ou remover um processo',
+      description: `Um processo com estado "Novo" pode ser editado ou removido. Cada processo tem um menu do lado direita com as opções "Editar" e "Apagar". Uma vez que o laboratório inicie o processo de elaboração, terá de entrar em contato com o laboratório para efetuar qualquer alteração.`,
     },
   ];
 
@@ -89,14 +84,14 @@ export default function Navbar(props) {
       };
 
   const list = (anchor: Anchor) => (
-    <Box sx={{ maxWidth: 400 }}>
+    <Box sx={{ maxWidth: 280, m: 1 }}>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((step, index) => (
           <Step key={step.label}>
             <StepLabel
               optional={
                 index === 2 ? (
-                  <Typography variant="caption">Last step</Typography>
+                  <Typography variant="caption">Última secção</Typography>
                 ) : null
               }
             >
@@ -111,14 +106,14 @@ export default function Navbar(props) {
                     onClick={handleNext}
                     sx={{ mt: 1, mr: 1 }}
                   >
-                    {index === steps.length - 1 ? 'Finish' : 'Continue'}
+                    {index === steps.length - 1 ? 'Fechar' : 'Continuar'}
                   </Button>
                   <Button
                     disabled={index === 0}
                     onClick={handleBack}
                     sx={{ mt: 1, mr: 1 }}
                   >
-                    Back
+                    Voltar
                   </Button>
                 </div>
               </Box>
@@ -128,9 +123,9 @@ export default function Navbar(props) {
       </Stepper>
       {activeStep === steps.length && (
         <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
+          <Typography>Manual completo</Typography>
           <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-            Reset
+            Ver de novo
           </Button>
         </Paper>
       )}
@@ -144,19 +139,19 @@ export default function Navbar(props) {
         <Toolbar>
           <Container maxWidth="xl" sx={{ border: 'solid 0px green' }}>
             <Grid container spacing={3}>
-              <Grid item xs={4} sx={{ mt: 2 }} >
+              <Grid item xs={4} sx={{ mt: 0.5 }} >
                 <Tooltip title="Lista de processos" followCursor>
                   <Fab color="primary" size="small" onClick={(user, page) => props.navigateTo(props.user, 1)} aria-label="list">
                     <HomeIcon />
                   </Fab>
                 </Tooltip>
               </Grid>
-              <Grid item xs={4}>
-                <Typography variant="h6" className={classes.title}>
+              <Grid item xs={4} sx={{ mt: 0.5 }}>
+                <Typography variant="h6" className={classes.title} align="center">
                   Prolabs
                 </Typography>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 2 }}>
+              <Grid item xs={4} sx={{ mt: 0.5 }}>
                 <Fab color="primary" size="small" sx={{ float: 'right' }} onClick={toggleDrawer("right", true)} aria-label="list">
                   <HelpIcon />
                 </Fab>
