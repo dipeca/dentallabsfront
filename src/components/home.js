@@ -241,7 +241,6 @@ export default function Home(props) {
               <TableCell align="left" >Processo</TableCell>
               <TableCell align="left" >Estado</TableCell>
               <TableCell align="left" >{resources.pt.FORM.CLINIC}</TableCell>
-              <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{resources.pt.FORM.DOCTOR}</TableCell>
               <TableCell align="left">{resources.pt.FORM.PATIENT}</TableCell>
               <TableCell align="left">{resources.pt.FORM.AGE}</TableCell>
               <TableCell align="left" >{resources.pt.FORM.REHAB_TYPE}</TableCell>

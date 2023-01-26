@@ -5,13 +5,13 @@ import { TextField } from '@material-ui/core';
 import { Typography } from '@mui/material';
 import { Button, Container, Box, FormLabel, Divider, Grid } from '@mui/material';
 import { RadioGroup, Radio, FormControlLabel } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MenuItem from '@mui/material/MenuItem';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import Chip from '@mui/material/Chip';
+import SelectAtlas from '@atlaskit/select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import axios from "axios";
 // or for Day.js
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -20,6 +20,17 @@ const service = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
   withCredentials: true, // Cookie is sent to client when using this service. (used for session)
 });
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export default function Edit(props) {
 
@@ -49,12 +60,13 @@ export default function Edit(props) {
     trials: "",
     state: "Novo",
     user: props.user._id,
-    firstTrial: "",
+    firstTrial: null,
     secondTrial: "",
     thirdTrial: "",
     firstTrialNote: "",
     secondTrialNote: "",
-    thirdTrialNote: ""
+    thirdTrialNote: "",
+    teethList: []
   });
   const params = useParams();
   const navigate = useNavigate();
@@ -102,6 +114,7 @@ export default function Edit(props) {
       secondTrialNote: form.secondTrialNote,
       thirdTrial: form.thirdTrial,
       thirdTrialNote: form.thirdTrialNote,
+      teethList: form.teethList,
     };
 
     // This will send a post request to update the data in the database.
@@ -142,6 +155,47 @@ export default function Edit(props) {
     }
   }
 
+  const teeth: OptionsType = [
+    { label: '1', value: '1', extra: 'extra' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
+    { label: '5', value: '5' },
+    { label: '6', value: '6' },
+    { label: '7', value: '7' },
+    { label: '8', value: '8' },
+    { label: '9', value: '9' },
+    { label: '10', value: '10' },
+    { label: '11', value: '11' },
+    { label: '12', value: '12' },
+    { label: '13', value: '13' },
+    { label: '14', value: '14' },
+    { label: '15', value: '15' },
+    { label: '16', value: '16' },
+    { label: '17', value: '17' },
+    { label: '18', value: '18' },
+    { label: '19', value: '19' },
+    { label: '20', value: '20' },
+    { label: '21', value: '21' },
+    { label: '22', value: '22' },
+    { label: '23', value: '23' },
+    { label: '24', value: '24' },
+    { label: '25', value: '25' },
+    { label: '26', value: '26' },
+    { label: '27', value: '27' },
+    { label: '28', value: '28' },
+    { label: '29', value: '29' },
+    { label: '30', value: '30' },
+    { label: '31', value: '31' },
+    { label: '32', value: '32' },
+  ];
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const {
+      target: { value },
+    } = event;
+  };
+
   // This following section will display the form that takes input from the user to update the data.
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -158,7 +212,13 @@ export default function Edit(props) {
               autoComplete="off"
             >
               <div>
+                <Box sx={{ ml: 1, mt: 2 }}>
+                  <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
+                    Informação do processo
+                  </Typography>
+                </Box>
                 <Box sx={{ pt: 2 }}>
+
                   {(props.user.role && props.user.role === "admin") && <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -296,6 +356,37 @@ export default function Edit(props) {
                   onChange={(e) => updateForm({ enum_mold: e.target.value })}
                 />
               </Box>
+                <Box sx={{ ml: 1, mt: 2 }}>
+                  <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
+                    Enumeração
+                  </Typography>
+                </Box>
+                <Grid container spacing={4} sx={{ ml: 1, mt: 2 }}>
+                  <Grid item xs={4}>
+                    <Box
+                      component="img"
+                      sx={{
+                        height: 323,
+                        width: 350,
+                        maxHeight: { xs: 463, md: 387 },
+                        maxWidth: { xs: 350, md: 250 },
+                      }}
+                      alt="Numeração universal"
+                      src="/universal-teeth-numbering.png"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <div className="App">
+                      <FormLabel id="rehabType-label">Numeração de próteses</FormLabel>
+                      <SelectAtlas
+                        value={form.teethList}
+                        onChange={(e) => updateForm({teethList: e})}
+                        isMulti
+                        options={teeth}
+                      />
+                    </div>
+                  </Grid>
+                </Grid>
                 {/*              <Box>
                 <TextField
                   fullWidth
@@ -322,7 +413,7 @@ export default function Edit(props) {
                 </Box> */}
                 <LocalizationProvider dateAdapter={AdapterMoment}>
 
-                  <Box sx={{ ml: 1, mt: 2 }}>
+                  <Box sx={{ ml: 1, mt: 2, pl: 1 }}>
                     <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
                       {_resources.FORM.TRIALS}
                     </Typography>
@@ -333,7 +424,7 @@ export default function Edit(props) {
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="1ª"
                         inputFormat="DD/MM/YYYY"
-                        value={form.firstTrial}
+                        value={form.firstTrial && form.firstTrial.size > 0 ? form.firstTrial : null}
                         onChange={(newValue: Dayjs | null) => updateForm({ firstTrial: newValue })}
                         renderInput={(params) => <TextField {...params} />}
                       />
@@ -352,16 +443,16 @@ export default function Edit(props) {
                       />
                     </Grid>
                     <Grid item xs={4}>
-                    <DesktopDatePicker
+                      <DesktopDatePicker
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="2ª"
                         inputFormat="DD/MM/YYYY"
-                        value={form.secondTrial}
-                        onChange={(newValue: Dayjs | null) => updateForm({ secondTrial : newValue })}
+                        value={form.secondTrial && form.secondTrial.size > 0 ? form.secondTrial : null}
+                        onChange={(newValue: Dayjs | null) => updateForm({ secondTrial: newValue })}
                         renderInput={(params) => <TextField {...params} />}
                       />
-                      </Grid>
-                      <Grid item xs={6}>
+                    </Grid>
+                    <Grid item xs={6}>
                       <TextField
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="Nota"
@@ -375,16 +466,16 @@ export default function Edit(props) {
                       />
                     </Grid>
                     <Grid item xs={4}>
-                    <DesktopDatePicker
+                      <DesktopDatePicker
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="3ª"
                         inputFormat="DD/MM/YYYY"
-                        value={form.secondTrial}
-                        onChange={(newValue: Dayjs | null) => updateForm({ thirdTrial : newValue })}
+                        value={form.thirdTrial && form.thirdTrial.size > 0 ? form.thirdTrial : null}
+                        onChange={(newValue: Dayjs | null) => updateForm({ thirdTrial: newValue })}
                         renderInput={(params) => <TextField {...params} />}
                       />
-                      </Grid>
-                      <Grid item xs={6}>
+                    </Grid>
+                    <Grid item xs={6}>
                       <TextField
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="Nota"

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@atlaskit/select": "^16.1.0",
+    "@atlaskit/tokens": "^0.13.3",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@material-ui/core": "^4.12.4",
