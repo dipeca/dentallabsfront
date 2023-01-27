@@ -217,7 +217,7 @@ export default function Edit(props) {
                     Informação do processo
                   </Typography>
                 </Box>
-                <Box sx={{ pt: 2 }}>
+                <Box sx={{ pt: 2, pl:1 }}>
 
                   {(props.user.role && props.user.role === "admin") && <Select
                     labelId="demo-simple-select-label"
@@ -233,7 +233,7 @@ export default function Edit(props) {
                   </Select>}
                   {(!props.user.role || props.user.role !== "admin") && <Chip label={form.state} color="primary" variant="outlined" />}
                 </Box>
-                <Box sx={{ pt: 2 }}>
+                <Box sx={{ pt: 2, display: 'flex' }}>
                   <TextField required
                     label={_resources.FORM.CLINIC}
                     variant="outlined"
@@ -245,7 +245,7 @@ export default function Edit(props) {
                     onChange={(e) => updateForm({ clinic: e.target.value })}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ pt: 2, display: 'flex' }}>
                   <TextField required
                     label={_resources.FORM.DOCTOR}
                     variant="outlined"
@@ -257,7 +257,7 @@ export default function Edit(props) {
                     onChange={(e) => updateForm({ doctor: e.target.value })}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ pt: 2, display: 'flex' }}>
                   <TextField required
                     fullWidth
                     label={_resources.FORM.PATIENT}
@@ -343,8 +343,7 @@ export default function Edit(props) {
                   />
                 </Box>
               </div>
-              <Divider variant="middle" />
-              <div><Box sx={{ pt: 2 }}>
+              <div><Box sx={{ display: 'flex' }}>
                 <TextField
                   fullWidth
                   multiline
@@ -361,13 +360,14 @@ export default function Edit(props) {
                     Enumeração
                   </Typography>
                 </Box>
-                <Grid container spacing={4} sx={{ ml: 1, mt: 2 }}>
-                  <Grid item xs={4}>
+                <Grid container sx={{ pt: 2, display: 'flex' }}>
+                  <Grid item xs={6} pl={0}>
                     <Box
                       component="img"
                       sx={{
-                        height: 323,
-                        width: 350,
+                        height: 160,
+                        width: 180,
+                        pl:0,
                         maxHeight: { xs: 463, md: 387 },
                         maxWidth: { xs: 350, md: 250 },
                       }}
@@ -375,7 +375,7 @@ export default function Edit(props) {
                       src="/universal-teeth-numbering.png"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={5}>
                     <div className="App">
                       <FormLabel id="rehabType-label">Numeração de próteses</FormLabel>
                       <SelectAtlas
@@ -418,7 +418,7 @@ export default function Edit(props) {
                       {_resources.FORM.TRIALS}
                     </Typography>
                   </Box>
-                  <Grid container spacing={4} sx={{ ml: 1, mt: 2 }}>
+                  <Grid container spacing={4} sx={{ pt: 2, display: 'flex' }}>
                     <Grid item xs={4}>
                       <DesktopDatePicker
                         disabled={!(props.user.role && props.user.role === "admin")}
@@ -429,7 +429,7 @@ export default function Edit(props) {
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={7}>
                       <TextField
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="Nota"
@@ -452,7 +452,7 @@ export default function Edit(props) {
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={7}>
                       <TextField
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="Nota"
@@ -475,7 +475,7 @@ export default function Edit(props) {
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={7}>
                       <TextField
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="Nota"
