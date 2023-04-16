@@ -4,6 +4,7 @@ import { resources } from '../resource'
 import { TextField } from '@material-ui/core';
 import { Typography } from '@mui/material';
 import { Button, Container, Box, FormLabel, Divider, Grid } from '@mui/material';
+import BasicMenu from "./BasicMenu";
 import { RadioGroup, Radio, FormControlLabel } from "@mui/material";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,8 +12,13 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import Chip from '@mui/material/Chip';
 import SelectAtlas from '@atlaskit/select';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import axios from "axios";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+
 // or for Day.js
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
@@ -21,27 +27,82 @@ const service = axios.create({
   withCredentials: true, // Cookie is sent to client when using this service. (used for session)
 });
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+export interface SimpleDialogProps {
+  openD: boolean;
+  selectedValue: string;
+  _id: int,
+  onClose: (value: string) => void;
+}
+
+function SimpleDialog(props: SimpleDialogProps) {
+  const { onClose, openD } = props;
+  const [comment, setComment] = React.useState(null);
+
+
+  const handleClose = () => {
+    onClose(props._id, comment);
+  };
+
+  return (
+    <Dialog onClose={handleClose} open={openD} PaperProps={{ sx: { width: "30%", height: "30%" } }}>
+      <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Enviar mensagem
+          </DialogContentText>
+          <Box sx={{ pt: 4, width: "100%", height: "60%", display: 'flex' }}>
+            <TextField 
+                      fullWidth
+                      multiline
+                      minRows={6}
+                      label="comentário"
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      id="comment"
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            Gravar mensagem
+          </Button>
+        </DialogActions>
+    </Dialog>
+  );
+}
 
 export default function Edit(props) {
 
+  const [openD, setOpenD] = React.useState(false);
+
   function errorHandler(error) {
     if (error) {
-      alert("Sessão expirada, por favor refresque a página no seu browser.");
+      alert("Ocorreu um erro com a sua sessão, por favor refresque a página no seu browser.");
       console.log(error);
       throw error;
     }
     throw error;
   }
+
+  const handleCloseDialog = (value: string, comment:string) => {
+    
+    if(comment) {
+      const record = {
+        comment : comment,
+        user: form.user
+      };
+
+      service
+      .post("/sendmail", {record})
+      .catch(errorHandler);
+
+      setOpenD(false);
+    }
+    
+    props.navigateTo(props.user, 1, props.idRecord);
+  };
 
   const _resources = resources[props.language]
 
@@ -121,15 +182,13 @@ export default function Edit(props) {
     service
       .post("/update/" + props.idRecord, { record })
       .catch(errorHandler);
-
-
-
-    props.navigateTo(props.user, 1, props.idRecord);
+ 
   }
 
   //deal with creation
   async function handleCreate(e) {
-    e.preventDefault();
+    if(e && e.preventDefault)
+      e.preventDefault();
 
     // When a post request is sent to the create url, we'll add a new record to the database.
     let newRecord = { ...form };
@@ -141,12 +200,39 @@ export default function Edit(props) {
       .catch(errorHandler);
 
     setForm({ age: "", rehabType: "", description: "", colour: "" });
-    props.navigateTo(props.user, 1, props.idRecord);
-
+    
   }
 
+  async function onSubmitWithComment(e) {
+
+    if(e && e.preventDefault)
+      e.preventDefault();
+      
+      onSubmit(e);
+
+      setOpenD(true);
+   
+  }
+
+  async function onSubmitNoComment(e) {
+    if(e && e.preventDefault) {
+      e.preventDefault();
+    }
+      //saveform
+      onSubmit(e);
+
+      setOpenD(false);
+
+      //back to list of records
+      handleCloseDialog();
+   
+  }
+
+
   async function onSubmit(e) {
-    e.preventDefault();
+    if(e && e.preventDefault)
+      e.preventDefault();
+
     if (props.isEdit) {
       handlEdit(e);
     }
@@ -156,17 +242,7 @@ export default function Edit(props) {
   }
 
   const teeth: OptionsType = [
-    { label: '1', value: '1', extra: 'extra' },
-    { label: '2', value: '2' },
-    { label: '3', value: '3' },
-    { label: '4', value: '4' },
-    { label: '5', value: '5' },
-    { label: '6', value: '6' },
-    { label: '7', value: '7' },
-    { label: '8', value: '8' },
-    { label: '9', value: '9' },
-    { label: '10', value: '10' },
-    { label: '11', value: '11' },
+    { label: '11', value: '11', extra: 'extra' },
     { label: '12', value: '12' },
     { label: '13', value: '13' },
     { label: '14', value: '14' },
@@ -174,8 +250,6 @@ export default function Edit(props) {
     { label: '16', value: '16' },
     { label: '17', value: '17' },
     { label: '18', value: '18' },
-    { label: '19', value: '19' },
-    { label: '20', value: '20' },
     { label: '21', value: '21' },
     { label: '22', value: '22' },
     { label: '23', value: '23' },
@@ -184,17 +258,23 @@ export default function Edit(props) {
     { label: '26', value: '26' },
     { label: '27', value: '27' },
     { label: '28', value: '28' },
-    { label: '29', value: '29' },
-    { label: '30', value: '30' },
+    { label: '41', value: '41' },
+    { label: '42', value: '42' },
+    { label: '43', value: '43' },
+    { label: '44', value: '44' },
+    { label: '45', value: '45' },
+    { label: '46', value: '46' },
+    { label: '47', value: '47' },
+    { label: '48', value: '48' },
     { label: '31', value: '31' },
     { label: '32', value: '32' },
+    { label: '33', value: '33' },
+    { label: '34', value: '34' },
+    { label: '35', value: '35' },
+    { label: '36', value: '36' },
+    { label: '37', value: '37' },
+    { label: '38', value: '38' },
   ];
-
-  const handleChange = (event: SelectChangeEvent) => {
-    const {
-      target: { value },
-    } = event;
-  };
 
   // This following section will display the form that takes input from the user to update the data.
   return (
@@ -365,8 +445,8 @@ export default function Edit(props) {
                     <Box
                       component="img"
                       sx={{
-                        height: 160,
-                        width: 180,
+                        height: 220,
+                        width: 220,
                         pl:0,
                         maxHeight: { xs: 463, md: 387 },
                         maxWidth: { xs: 350, md: 250 },
@@ -377,7 +457,7 @@ export default function Edit(props) {
                   </Grid>
                   <Grid item xs={5}>
                     <div className="App">
-                      <FormLabel id="rehabType-label">Numeração de próteses</FormLabel>
+                      <FormLabel id="rehabType-label">Numeração de próteses (segundo FDI)</FormLabel>
                       <SelectAtlas
                         value={form.teethList}
                         onChange={(e) => updateForm({teethList: e})}
@@ -493,12 +573,25 @@ export default function Edit(props) {
 
               </div>
               <Divider variant="middle" />
-              <Box sx={{ m: 1, p: 1 }}>
-                <Button variant="outlined" type="submit">{_resources.FORM.CREATE}</Button>
+              <Box sx={{ m: 1, p: 1}}>
+              {(props.user.role && props.user.role !== "admin") && 
+                <Button variant="outlined" onClick={() => onSubmitNoComment()} type="submit">Gravar</Button>
+              }
+              {(props.user.role && props.user.role === "admin") && 
+               <Box sx={{ '& > :not(style)': { m: 1 } }}>
+                  <BasicMenu user={props.user} label="Gravar" navigateTo={onSubmitWithComment} editLabel="Gravar e enviar mensagem" 
+                      deleteLabel="Gravar sem enviar mensagem"  delete={onSubmitNoComment} withConfirmDialog={false} />
+                </Box>
+              }
               </Box>
             </Box>
 
           </form>
+          <SimpleDialog
+            openD={openD}
+            onClose={handleCloseDialog}
+            _id={props._id}
+          />
         </Container>
       </div>
     </LocalizationProvider>

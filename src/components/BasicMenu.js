@@ -63,8 +63,11 @@ export default function BasicMenu(props) {
   const handleDelete = () => {
     handleClose();
 
-    setOpenD(true);
-    //props.deleteRecord(props.record._id)
+    if(props.withConfirmDialog === true) {
+      setOpenD(true);
+    } else {
+      props.delete(props._id);
+    }
   }
   
   const handleCloseDialog = (value: string) => {
@@ -75,6 +78,7 @@ export default function BasicMenu(props) {
 return (
   <div>
     <Button
+      variant="outlined" 
       size="small"
       id="basic-button"
       aria-controls={open ? 'basic-menu' : undefined}
@@ -82,7 +86,7 @@ return (
       aria-expanded={open ? 'true' : undefined}
       onClick={handleClick}
     >
-      ...
+      {props.label}
     </Button>
     <Menu
       id="basic-menu"
@@ -93,8 +97,8 @@ return (
         'aria-labelledby': 'basic-button',
       }}
     >
-      <MenuItem onClick={handleEdit}>Editar</MenuItem>
-      <MenuItem onClick={handleDelete}>Apagar</MenuItem>
+      <MenuItem onClick={handleEdit}>{props.editLabel}</MenuItem>
+      <MenuItem onClick={handleDelete}>{props.deleteLabel}</MenuItem>
     </Menu>
     <SimpleDialog
         openD={openD}

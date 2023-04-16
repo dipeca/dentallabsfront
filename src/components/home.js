@@ -56,7 +56,7 @@ export default function Home(props) {
 
   const Record = (props) => (
     <StyledTableRow>
-      <TableCell align="left">{props.record.number}</TableCell>
+      <TableCell align="left"><Chip color="primary" variant="outlined" onClick={() => navigateTo(props.record._id)} label={props.record.number} /></TableCell>
       <TableCell align="left"><Chip label={props.record.state} color="primary" variant="outlined" /></TableCell>
       <TableCell align="left">{props.record.clinic}</TableCell>
       <TableCell align="left">{props.record.patient}</TableCell>
@@ -65,7 +65,7 @@ export default function Home(props) {
       <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{truncate(props.record.description)}</TableCell>
       <TableCell align="left">
         <Box sx={{ '& > :not(style)': { m: 1 } }}>
-          <BasicMenu user={props.user} navigateTo={navigateTo} delete={props.deleteRecord} _id={props.record._id} />
+          <BasicMenu user={props.user} navigateTo={navigateTo} label="..." editLabel="Editar" deleteLabel="Apagar" withConfirmDialog={true} delete={props.deleteRecord} _id={props.record._id} />
         </Box>
       </TableCell>
     </StyledTableRow>
