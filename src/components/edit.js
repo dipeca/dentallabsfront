@@ -18,6 +18,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import { Input } from '@mui/material';
 
 // or for Day.js
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -127,6 +128,8 @@ export default function Edit(props) {
     firstTrialNote: "",
     secondTrialNote: "",
     thirdTrialNote: "",
+    img: "",
+    image64: "",
     teethList: []
   });
   const params = useParams();
@@ -176,14 +179,51 @@ export default function Edit(props) {
       thirdTrial: form.thirdTrial,
       thirdTrialNote: form.thirdTrialNote,
       teethList: form.teethList,
+      img: form.img
     };
 
-    // This will send a post request to update the data in the database.
+    const formData = new FormData();
+    formData.append('img', image);
+    formData.append('clinic', form.clinic);
+    formData.append('doctor', form.doctor);
+    formData.append('patient', form.patient);
+    formData.append('age', form.age);
+    formData.append('name', form.name);
+    formData.append('rehabType', form.rehabType);
+    formData.append('description', form.description);
+    formData.append('colour', form.colour);
+    formData.append('enum_mold', form.enum_mold);
+    formData.append('doc', form.doc);
+    formData.append('state',form.state);
+    formData.append('firstTrial', form.firstTrial);
+    formData.append('firstTrialNote', form.firstTrialNote);
+    formData.append('secondTrial', form.secondTrial);
+    formData.append('secondTrialNote', form.secondTrialNote);
+    formData.append('thirdTrial', form.thirdTrial);
+    formData.append('thirdTrialNote', form.thirdTrialNote);
+    formData.append('teethList', JSON.stringify(form.teethList));
+
+
+    const config = { headers: { "Content-Type": "multipart/form-data" } };
+
     service
-      .post("/update/" + props.idRecord, { record })
-      .catch(errorHandler);
+    .post("/update/" + props.idRecord,
+          formData,
+          config)
+          .catch(errorHandler);
+
+    // This will send a post request to update the data in the database.
+    //service
+    //  .post("/update/" + props.idRecord, { record })
+    //  .catch(errorHandler);
  
   }
+
+  const [image, setImage] = useState({});
+
+  const fileOnChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   //deal with creation
   async function handleCreate(e) {
@@ -241,6 +281,7 @@ export default function Edit(props) {
     }
   }
 
+
   const teeth: OptionsType = [
     { label: '11', value: '11', extra: 'extra' },
     { label: '12', value: '12' },
@@ -281,7 +322,7 @@ export default function Edit(props) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
         <Container maxWidth="md">
-          <form onSubmit={onSubmit} style={{ width: '100%' }}>
+          <form onSubmit={onSubmit} style={{ width: '100%' }} encType='multipart/form-data'>
             <Box
               justifyContent="center"
               alignItems="center"
@@ -455,7 +496,7 @@ export default function Edit(props) {
                       src="/universal-teeth-numbering.png"
                     />
                   </Grid>
-                  <Grid item xs={5}>
+                  <Grid item xs={5}  >
                     <div className="App">
                       <FormLabel id="rehabType-label">Numeração de próteses (segundo FDI)</FormLabel>
                       <SelectAtlas
@@ -464,6 +505,25 @@ export default function Edit(props) {
                         isMulti
                         options={teeth}
                       />
+                      <Button
+                        variant="contained"
+                        component="label"
+                      >
+                        Imagem representativa
+                        <input
+                          type="file"
+                          accept=".png, .jpg, .jpeg"
+                          name="img"
+                          onChange={fileOnChange}
+                          hidden
+                        />
+                      </Button>
+                     
+                      {form.image64 && <img
+                        src={`data:image/png;base64, ${form.image64}`}
+                        alt="Image"
+                      /> 
+                      }
                     </div>
                   </Grid>
                 </Grid>
@@ -491,6 +551,7 @@ export default function Edit(props) {
                   onChange={(e) => updateForm({ sent_to_email: e.target.value })}
                 />
                 </Box> */}
+                {((props.user.role && props.user.role === "admin") || (form.firstTrial && form.firstTrial.size > 0))  && 
                 <LocalizationProvider dateAdapter={AdapterMoment}>
 
                   <Box sx={{ ml: 1, mt: 2, pl: 1 }}>
@@ -570,11 +631,12 @@ export default function Edit(props) {
                     </Grid>
                   </Grid>
                 </LocalizationProvider>
-
+              }
               </div>
+
               <Divider variant="middle" />
               <Box sx={{ m: 1, p: 1}}>
-              {(props.user.role && props.user.role !== "admin") && 
+              {(!props.user.role || props.user.role !== "admin") && 
                 <Button variant="outlined" onClick={() => onSubmitNoComment()} type="submit">Gravar</Button>
               }
               {(props.user.role && props.user.role === "admin") && 
