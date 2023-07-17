@@ -96,7 +96,7 @@ export default function Edit(props) {
       };
 
       service
-      .post("/sendmail", {record})
+      .post("/record/sendmail", {record})
       .catch(errorHandler);
 
       setOpenD(false);
