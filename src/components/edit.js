@@ -476,55 +476,57 @@ export default function Edit(props) {
                   onChange={(e) => updateForm({ enum_mold: e.target.value })}
                 />
               </Box>
-                <Box sx={{ ml: 1, mt: 2 }}>
-                  <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
-                    Enumeração
-                  </Typography>
-                </Box>
-                <Grid container sx={{ pt: 2, display: 'flex' }}>
-                  <Grid item xs={6} pl={0}>
-                    <Box
-                      component="img"
-                      sx={{
-                        height: 220,
-                        width: 220,
-                        pl:0,
-                        maxHeight: { xs: 463, md: 387 },
-                        maxWidth: { xs: 350, md: 250 },
-                      }}
-                      alt="Numeração universal"
-                      src="/universal-teeth-numbering.png"
-                    />
-                  </Grid>
-                  <Grid item xs={5}  >
-                    <div className="App">
-                      <FormLabel id="rehabType-label">Numeração de próteses (segundo FDI)</FormLabel>
-                      <SelectAtlas
-                        value={form.teethList}
-                        onChange={(e) => updateForm({teethList: e})}
-                        isMulti
-                        options={teeth}
+              <Grid container sx={{ flexDirection: { xs: "column", md: "column", ld: "column" } }}>
+                  <Box sx={{ ml: 1, mt: 2 }}>
+                    <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
+                      Enumeração
+                    </Typography>
+                  </Box>
+                  <Grid container sx={{ pt: 2, display: 'flex' }}>
+                    <Grid item xs={6} pl={0}>
+                      <Box
+                        component="img"
+                        sx={{
+                          height: 220,
+                          width: 220,
+                          pl:0,
+                          maxHeight: { xs: 463, md: 387 },
+                          maxWidth: { xs: '90%', md: 250 },
+                        }}
+                        alt="Numeração universal"
+                        src="/universal-teeth-numbering.png"
                       />
-                      <Button
-                        variant="contained"
-                        component="label"
-                      >
-                        Imagem representativa
-                        <input
-                          type="file"
-                          accept=".png, .jpg, .jpeg"
-                          name="img"
-                          onChange={fileOnChange}
-                          hidden
+                    </Grid>
+                    <Grid item xs={6}  >
+                      <div className="App">
+                        <FormLabel id="rehabType-label">Numeração de próteses (segundo FDI)</FormLabel>
+                        <SelectAtlas
+                          value={form.teethList}
+                          onChange={(e) => updateForm({teethList: e})}
+                          isMulti
+                          options={teeth}
                         />
-                      </Button>
-                     
-                      {form.image64 && <img
-                        src={`data:image/png;base64, ${form.image64}`}
-                        alt="Image"
-                      /> 
-                      }
-                    </div>
+                        <Button
+                          variant="contained"
+                          component="label"
+                        >
+                          Imagem representativa
+                          <input
+                            type="file"
+                            accept=".png, .jpg, .jpeg"
+                            name="img"
+                            onChange={fileOnChange}
+                            hidden
+                          />
+                        </Button>
+                      
+                        {form.image64 && <img
+                          src={`data:image/png;base64, ${form.image64}`}
+                          alt="Image"
+                        /> 
+                        }
+                      </div>
+                    </Grid>
                   </Grid>
                 </Grid>
                 {/*              <Box>
