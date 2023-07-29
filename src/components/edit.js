@@ -18,7 +18,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import { Input } from '@mui/material';
 
 // or for Day.js
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -160,28 +159,7 @@ export default function Edit(props) {
 
   //deal with edition
   async function handlEdit(e) {
-    const record = {
-      clinic: form.clinic,
-      doctor: form.doctor,
-      patient: form.patient,
-      age: form.age,
-      name: form.name,
-      rehabType: form.rehabType,
-      description: form.description,
-      colour: form.colour,
-      enum_mold: form.enum_mold,
-      doc: form.doc,
-      state: form.state,
-      firstTrial: form.firstTrial,
-      firstTrialNote: form.firstTrialNote,
-      secondTrial: form.secondTrial,
-      secondTrialNote: form.secondTrialNote,
-      thirdTrial: form.thirdTrial,
-      thirdTrialNote: form.thirdTrialNote,
-      teethList: form.teethList,
-      img: form.img
-    };
-
+   
     const formData = new FormData();
     formData.append('img', image);
     formData.append('clinic', form.clinic);
@@ -522,7 +500,7 @@ export default function Edit(props) {
                       
                         {form.image64 && <img
                           src={`data:image/png;base64, ${form.image64}`}
-                          alt="Image"
+                          alt="Imagem do caso"
                         /> 
                         }
                       </div>
