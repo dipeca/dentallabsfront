@@ -531,9 +531,8 @@ export default function Edit(props) {
                   onChange={(e) => updateForm({ sent_to_email: e.target.value })}
                 />
                 </Box> */}
-                {((props.user.role && props.user.role === "admin") || (form.firstTrial && form.firstTrial.size > 0))  && 
+                {((props.user.role && props.user.role === "admin") || (form.firstTrial && form.firstTrial !== ''))  && 
                 <LocalizationProvider dateAdapter={AdapterMoment}>
-
                   <Box sx={{ ml: 1, mt: 2, pl: 1 }}>
                     <Typography variant="h6" component="h6" sx={{ color: "#1976d2" }}>
                       {_resources.FORM.TRIALS}
@@ -545,7 +544,7 @@ export default function Edit(props) {
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="1ª"
                         inputFormat="DD/MM/YYYY"
-                        value={form.firstTrial && form.firstTrial.size > 0 ? form.firstTrial : null}
+                        value={form.firstTrial && form.firstTrial !== '' ? form.firstTrial : null}
                         onChange={(newValue: Dayjs | null) => updateForm({ firstTrial: newValue })}
                         renderInput={(params) => <TextField {...params} />}
                       />
@@ -568,7 +567,7 @@ export default function Edit(props) {
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="2ª"
                         inputFormat="DD/MM/YYYY"
-                        value={form.secondTrial && form.secondTrial.size > 0 ? form.secondTrial : null}
+                        value={form.secondTrial && form.secondTrial !== '' ? form.secondTrial : null}
                         onChange={(newValue: Dayjs | null) => updateForm({ secondTrial: newValue })}
                         renderInput={(params) => <TextField {...params} />}
                       />
@@ -591,7 +590,7 @@ export default function Edit(props) {
                         disabled={!(props.user.role && props.user.role === "admin")}
                         label="3ª"
                         inputFormat="DD/MM/YYYY"
-                        value={form.thirdTrial && form.thirdTrial.size > 0 ? form.thirdTrial : null}
+                        value={form.thirdTrial && form.thirdTrial !== '' ? form.thirdTrial : null}
                         onChange={(newValue: Dayjs | null) => updateForm({ thirdTrial: newValue })}
                         renderInput={(params) => <TextField {...params} />}
                       />
