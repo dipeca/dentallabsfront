@@ -198,10 +198,27 @@ export default function Edit(props) {
   }
 
   const [image, setImage] = useState({});
+  const [preview, setPreview] = useState(null);
 
   const fileOnChange = (e) => {
     setImage(e.target.files[0]);
+
+    setPreview(null);
+    getBase64(e.target.files[0], (result) => {
+        setPreview(result);
+    });
   };
+
+  function getBase64(file, cb) {
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+          cb(reader.result)
+      };
+      reader.onerror = function (error) {
+          console.log('Error: ', error);
+      };
+  }
 
   //deal with creation
   async function handleCreate(e) {
@@ -498,10 +515,19 @@ export default function Edit(props) {
                           />
                         </Button>
                       
-                        {form.image64 && <img
+                        {form.image64 && !preview &&
+                          <img width="196" height="196"
                           src={`data:image/png;base64, ${form.image64}`}
-                          alt="Imagem do caso"
-                        /> 
+                          alt="Imagem representativa atual"
+                          />                         
+                        }
+
+                        {preview &&
+                          <img width="196" height="196"
+                          id="preview"
+                          src={`${preview}`}
+                          alt="Imagem representativa para gravar"
+                          />                         
                         }
                       </div>
                     </Grid>
