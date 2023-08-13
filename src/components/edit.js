@@ -229,10 +229,38 @@ export default function Edit(props) {
     let newRecord = { ...form };
     //newRecord.state = "Novo";
 
+       
+    const formData = new FormData();
+    formData.append('img', image);
+    formData.append('clinic', form.clinic);
+    formData.append('user', form.user);
+    formData.append('doctor', form.doctor);
+    formData.append('patient', form.patient);
+    formData.append('age', form.age);
+    formData.append('name', form.name);
+    formData.append('rehabType', form.rehabType);
+    formData.append('description', form.description);
+    formData.append('colour', form.colour);
+    formData.append('enum_mold', form.enum_mold);
+    formData.append('doc', form.doc);
+    formData.append('state',form.state);
+    formData.append('firstTrial', form.firstTrial);
+    formData.append('firstTrialNote', form.firstTrialNote);
+    formData.append('secondTrial', form.secondTrial);
+    formData.append('secondTrialNote', form.secondTrialNote);
+    formData.append('thirdTrial', form.thirdTrial);
+    formData.append('thirdTrialNote', form.thirdTrialNote);
+    formData.append('teethList', JSON.stringify(form.teethList));
+
+
+    const config = { headers: { "Content-Type": "multipart/form-data" } };
+
     let record = newRecord;
     service
-      .post("/record/add", { record })
-      .catch(errorHandler);
+      .post("/record/add", 
+          formData,
+          config)
+          .catch(errorHandler)
 
     setForm({ age: "", rehabType: "", description: "", colour: "" });
     
@@ -516,14 +544,14 @@ export default function Edit(props) {
                         </Button>
                       
                         {form.image64 && !preview &&
-                          <img width="196" height="196"
+                          <img width="128" height="128"
                           src={`data:image/png;base64, ${form.image64}`}
                           alt="Imagem representativa atual"
                           />                         
                         }
 
                         {preview &&
-                          <img width="196" height="196"
+                          <img width="128" height="128"
                           id="preview"
                           src={`${preview}`}
                           alt="Imagem representativa para gravar"
