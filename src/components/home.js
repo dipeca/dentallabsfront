@@ -135,7 +135,7 @@ export default function Home(props) {
   async function deleteRecord(id) {
 
     service
-      .delete("/" + id)
+      .delete("record/" + id)
       .catch(errorHandler);
 
     /*
